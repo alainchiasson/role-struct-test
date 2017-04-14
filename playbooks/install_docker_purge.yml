@@ -1,0 +1,20 @@
+---
+# Installs two roles - testing installabiliyt 
+- name: Retrieve facts all  host
+  hosts:
+    - all
+  gather_facts: true
+  any_errors_fatal: True
+  tasks: []
+
+- name: Deploy docker purge on all docker nodes.
+  hosts:
+    - all
+  roles:
+    - { role: docker-purge-function/deploy }
+
+- name: Deploy docker purge on all docker nodes.
+  hosts:
+    - all
+  roles:
+    - { role: docker-purge-state, state: "present" }

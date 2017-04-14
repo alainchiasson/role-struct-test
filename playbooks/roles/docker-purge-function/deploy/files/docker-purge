@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# Simple script to purge exited docker containers and remove dangling images.
+#
+
+# Logging function
+
+function log () {
+  logger -i -t docker_purge "$1"
+}
+
+function log_error () {
+  log "$1"
+  exit 1
+}
+
+log "Starting Purging of docker images and containers."
+# Verify if the docker command is installed
+if which docker
+then
+  log "Purge of exited docker containers"
+  idlist=$( docker ps -q -f status=exited )
+  # Only delete if there are dead images.
+  [[ "$idlist" != "" ]] && docker rm $idlist || log "No containers to delete"
+
+  log "Purge of dangling docker images"
+  idlist=$( docker images -q -f "dangling=true" )
+  # Only run if there are
+  [[ "$idlist" != "" ]] && docker rmi $idlist || log "No Images to delete"
+else
+  log_error "Docker command not on path. Try installting docker. Purge not run."
+fi
+
+log "Completed Purging of docker images and containers."
+exit 0;

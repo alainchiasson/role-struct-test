@@ -1,0 +1,35 @@
+# Attempt to do tasks based on a value passed into (state)
+---
+# For example,
+#
+- name: Place purge script in proper loaction
+  copy:
+    src: files/docker-purge
+    dest: /usr/local/bin/docker-purge
+    mode: 0555
+    owner: root
+  when: "state == 'present'"
+
+- name: Schedule in cron
+  cron:
+    cron_file: docker-purge-cron
+    user: root
+    name: "Purge Docker"
+    minute: "30"
+    hour: "*"
+    job: "/usr/local/bin/docker-purge > /dev/null"
+  when: "state == 'present'"
+
+- name: Remove from cron
+  cron:
+    user: root
+    cron_file: docker-purge-cron
+    name: "Purge Docker"
+    state: "absent"
+  when: "state == 'absent'"
+
+- name: Remove purge script
+  file:
+    path: /usr/local/bin/docker-purge
+    state: "absent"
+  when: "state == 'absent'"

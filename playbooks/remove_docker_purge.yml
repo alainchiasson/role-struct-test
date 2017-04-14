@@ -1,0 +1,22 @@
+---
+# Removes two roles - testing installabiliyt 
+
+- name: Retrieve facts all  host
+
+  hosts:
+    - all
+  gather_facts: true
+  any_errors_fatal: True
+  tasks: []
+
+- name: Remove docker purge on all docker nodes.
+  hosts:
+    - all
+  roles:
+    - { role: docker-purge-function/remove }
+
+- name: Remove docker purge on all docker nodes.
+  hosts:
+    - all
+  roles:
+    - { role: docker-purge-state, state: "absent" }

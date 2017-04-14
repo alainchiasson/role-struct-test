@@ -1,0 +1,27 @@
+---
+- name: Retrieve facts all host
+
+  hosts:
+   - all
+  gather_facts: true
+  any_errors_fatal: True
+
+  tasks:
+  - name: just print somthing out
+    debug:
+      msg: "{{ ansible_all_ipv4_addresses[1] }}"
+  - name: build private network inventory
+    local_action:
+      module: lineinfile
+      state: present
+      create: yes
+      dest: ./inventory
+      line: "{{ ansible_all_ipv4_addresses[1] }}"
+  - name: Set authorized key took from file
+    become: true
+    become_user: root
+    become_method: sudo
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

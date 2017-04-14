@@ -1,0 +1,19 @@
+# file: roles/docker-purge/tasks/main.yml
+---
+# For example,
+#
+- name: Place purge script in proper loaction
+  copy:
+    src: files/docker-purge
+    dest: /usr/local/bin/docker-purge-function
+    mode: 0555
+    owner: root
+
+- name: Schedule in cron
+  cron:
+    cron_file: docker-purge-function-cron
+    user: root
+    name: "Purge Docker"
+    minute: "30"
+    hour: "*"
+    job: "/usr/local/bin/docker-purge-function > /dev/null"

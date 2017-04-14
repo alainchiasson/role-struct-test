@@ -1,0 +1,15 @@
+# file: roles/docker-purge/tasks/main.yml
+---
+# For example,
+#
+- name: Remove from cron
+  cron:
+    user: root
+    cron_file: docker-purge-function-cron
+    name: "Purge Docker"
+    state: "absent"
+
+- name: Remove purge script
+  file:
+    path: /usr/local/bin/docker-purge-function
+    state: "absent"
